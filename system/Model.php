@@ -285,7 +285,7 @@ class Model
 		{
 			$validation = \Config\Services::validation(null, false);
 		}
-		
+
 		$this->validation = $validation;
 	}
 
@@ -690,7 +690,6 @@ class Model
 	 * deletes a single item by id
 	 * $model->delete(id)
 	 *
-	 *
 	 * @param mixed $id    The rows primary key (values)
 	 * @param bool  $purge Allows overriding the soft deletes setting.
 	 *
@@ -732,9 +731,18 @@ class Model
 		{
 			if ($id)
 			{
-				$result = $this->builder()
+				if (is_array($id))
+				{
+					$result = $this->builder()
+						->whereIn($this->primaryKey, $id)
+						->delete();
+				}
+				else
+				{
+					$result = $this->builder()
 						->where($this->primaryKey, $id)
 						->delete();
+				}
 			}
 			else
 			{
@@ -1159,7 +1167,7 @@ class Model
 		{
 			$rules = array_intersect_key($rules, array_flip($options['only']));
 		}
-		
+
 		return $rules;
 	}
 
