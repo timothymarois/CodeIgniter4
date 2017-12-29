@@ -611,6 +611,12 @@ class Model
 	 * Updates a single record in $this->table. If an object is provided,
 	 * it will attempt to convert it into an array.
 	 *
+	 * updates a single item by id
+	 * $model->update(id, data)
+	 *
+	 * updates multiple items by array of ids
+	 * $model->update(array, data)
+	 *
 	 * @param int|string   $id
 	 * @param array|object $data
 	 *
@@ -665,10 +671,22 @@ class Model
 		}
 
 		// Must use the set() method to ensure objects get converted to arrays
-		$result = $this->builder()
-				->where($this->primaryKey, $id)
-				->set($data['data'])
-				->update();
+
+		if (is_array($id))
+		{
+			$result = $this->builder()
+					->whereIn($this->primaryKey, $id)
+					->set($data['data'])
+					->update();
+		}
+		else
+		{
+			$result = $this->builder()
+					->where($this->primaryKey, $id)
+					->set($data['data'])
+					->update();
+		}
+
 
 		$this->trigger('afterUpdate', ['id' => $id, 'data' => $originalData, 'result' => $result]);
 
@@ -750,7 +768,7 @@ class Model
 			}
 		}
 
-		$this->trigger('afterDelete', ['key' => $key, 'value' => $value, 'purge' => $purge, 'result' => $result, 'data' => null]);
+		$this->trigger('afterDelete', ['id' => $id, 'value' => $value, 'purge' => $purge, 'result' => $result, 'data' => null]);
 
 		return $result;
 	}

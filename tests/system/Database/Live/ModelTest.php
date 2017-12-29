@@ -344,7 +344,7 @@ class ModelTest extends \CIDatabaseTestCase
 
 		$this->seeInDatabase('user', ['name' =>'Derek Jones', 'deleted' => 0]);
 
-		$model->deleteWhere('name', 'Derek Jones');
+		$model->where(['name' => 'Derek Jones'])->delete();
 
 		$this->seeInDatabase('user', ['name' => 'Derek Jones', 'deleted' => 1]);
 	}
@@ -357,7 +357,7 @@ class ModelTest extends \CIDatabaseTestCase
 
 		$this->seeInDatabase('user', ['name' =>'Derek Jones', 'deleted' => 0]);
 
-		$model->deleteWhere('name', 'Derek Jones', true);
+		$model->where(['name' => 'Derek Jones'])->delete(null,true);
 
 		$this->dontSeeInDatabase('user', ['name' => 'Derek Jones']);
 	}
@@ -533,4 +533,3 @@ class ModelTest extends \CIDatabaseTestCase
 		$this->assertTrue($model->hasToken('afterDelete'));
 	}
 }
-
